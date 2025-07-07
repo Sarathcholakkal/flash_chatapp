@@ -45,6 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   email = value;
                 },
                 textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black),
                 keyboardType: TextInputType.emailAddress,
                 decoration: kinputDecoration.copyWith(
                   hintText: 'enter your email',
@@ -56,6 +57,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   password = value;
                 },
                 textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black),
                 obscureText: true,
 
                 decoration: kinputDecoration.copyWith(

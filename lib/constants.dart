@@ -34,3 +34,9 @@ const kinputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
+
+
+// app id
+// Platform  Firebase App Id
+// web       1:116011609487:web:9817cfea2113e2042deffa
+// android   1:116011609487:android:43ccc4f0a13205902deffa

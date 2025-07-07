@@ -76,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen>
                 onChanged: (value) {
                   email = value;
                 },
+                style: const TextStyle(color: Colors.black),
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
                 decoration: kinputDecoration.copyWith(
@@ -87,11 +88,13 @@ class _LoginScreenState extends State<LoginScreen>
                 onChanged: (value) {
                   password = value;
                 },
+                style: const TextStyle(color: Colors.black),
 
                 textAlign: TextAlign.center,
                 obscureText: true,
                 decoration: kinputDecoration.copyWith(
                   hintText: 'Enter your password',
+                  focusColor: Colors.black,
                 ),
               ),
               SizedBox(height: 24.0),
