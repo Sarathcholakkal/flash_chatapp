@@ -1,4 +1,5 @@
 import 'package:flash_chat/constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,9 +84,17 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            //
             StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection("messages").snapshots(),
               builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlue,
+                    ),
+                  );
+                }
                 List<Text> messageWidgets = [];
                 if (snapshot.hasData) {
                   final messages = snapshot.data!.docs;
@@ -100,7 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     messageWidgets.add(messagewidget);
                   }
                 }
-                return Column(children: messageWidgets);
+                return Expanded(child: ListView(children: messageWidgets));
               },
             ),
             Container(
