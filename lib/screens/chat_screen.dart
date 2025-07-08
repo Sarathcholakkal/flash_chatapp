@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+User? loggedInUser;
+final _firestore = FirebaseFirestore.instance;
+
 class ChatScreen extends StatefulWidget {
   static const id = 'chat_screen';
 
@@ -14,8 +17,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  late User loggedInUser;
+
   String? messageText;
 
   void getCurrentUser() {
@@ -23,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = _auth.currentUser; // No await needed
       if (user != null) {
         loggedInUser = user;
-        print('Logged in user: ${loggedInUser.email}');
+        print('Logged in user: ${loggedInUser?.email}');
       } else {
         print('No user is currently signed in.');
       }
@@ -110,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         try {
                           await _firestore.collection('messages').add({
                             'text': messageText,
-                            'sender': loggedInUser.email,
+                            'sender': loggedInUser?.email,
                             'timestamp':
                                 FieldValue.serverTimestamp(), // Add this for sorting
                           });
@@ -150,19 +152,24 @@ class MessageStream extends StatelessWidget {
         }
         List<MessageBubble> messageWidgets = [];
         if (snapshot.hasData) {
-          final messages = snapshot.data!.docs;
+          final messages = snapshot.data!.docs.reversed;
           for (var message in messages) {
             Map<String, dynamic> data = message.data() as Map<String, dynamic>;
             final messageText = data['text'];
             final messageSender = data['sender'];
+            final currenUser = loggedInUser?.email;
+
             final messagewidget = MessageBubble(
               sender: messageSender,
               text: messageText,
+              isMe: currenUser == messageSender,
             );
             messageWidgets.add(messagewidget);
           }
         }
-        return Expanded(child: ListView(children: messageWidgets));
+        return Expanded(
+          child: ListView(reverse: true, children: messageWidgets),
+        );
       },
     );
   }
@@ -171,19 +178,37 @@ class MessageStream extends StatelessWidget {
 class MessageBubble extends StatelessWidget {
   final String sender;
   final String text;
-  const MessageBubble({required this.sender, required this.text});
+  final bool isMe;
+  const MessageBubble({
+    required this.sender,
+    required this.text,
+    required this.isMe,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Column(
+        crossAxisAlignment: isMe
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Text(sender),
           Material(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  ),
             elevation: 5.0,
-            color: Colors.lightBlue,
+            color: isMe ? Colors.lightBlue : Colors.amber,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 10.0,
