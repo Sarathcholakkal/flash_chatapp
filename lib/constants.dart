@@ -40,3 +40,10 @@ const kinputDecoration = InputDecoration(
 // Platform  Firebase App Id
 // web       1:116011609487:web:9817cfea2113e2042deffa
 // android   1:116011609487:android:43ccc4f0a13205902deffa
+
+
+
+// sample user details
+
+ //hello@gmail.com  hello@123
+ //hai@gmail.com  hai@123
